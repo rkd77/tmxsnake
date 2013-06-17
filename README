@@ -1,0 +1,7 @@
+Klon węża z PTSDOSa na TC 2048 lub 2068.
+Sterowanie 5,6,7,8,spacja. Należy zjadać owoce, unikać czaszek.
+
+Kompilacja:
+Najpierw należy zbudować z88dk z podmienionym plikiem
+z88dk/libsrc/stdio/ansi/F6.BIN
+Później już wystarczy make.
