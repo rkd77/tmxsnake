@@ -1,5 +1,6 @@
 #include <im2.h>
 #include <input.h>
+#include <spectrum.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,6 +17,9 @@
 unsigned char poleco[ROZMIAR];
 unsigned char listax[ROZMIAR];
 unsigned char listay[ROZMIAR];
+
+void *joyfunc;
+
 unsigned char last_x, last_y, prev_x, prev_y, cur_x, cur_y, nowy_kierunek;
 unsigned char koniec, przerwa, blad, zjadl;
 unsigned short int liczba_czach, liczba_jablek, zjedzone, rekord;
@@ -347,7 +351,7 @@ void
 klawiatura(void)
 {
 	unsigned char k = in_Inkey();
-	unsigned int joy = in_JoyKempston();
+	unsigned int joy = joyfunc();
 
 	if (!k && !joy) return;
 
@@ -429,6 +433,7 @@ M_END_ISR
 int
 main(int argc, char *argv[])
 {
+	joyfunc = (zx_type() == 2) ? in_JoyTimex1 : in_JoyKempston;
 	snake();
 	wyswietl();
 #asm
