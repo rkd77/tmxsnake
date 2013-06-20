@@ -5,7 +5,7 @@
 #include <string.h>
 
 #define SIZE_X 40
-#define SIZE_Y 23
+#define SIZE_Y 24
 #define ROZMIAR (SIZE_X * SIZE_Y)
 
 #define ROZMIAR2 (ROZMIAR + ROZMIAR)
@@ -333,10 +333,13 @@ text(void)
 void
 wyswietl(void)
 {
-	int i;
+	int i,j,k;
 
-	move_cursor(0, 0);
-	for (i = 0; i < ROZMIAR; i++) puts_cons(napisy[poleco[i]]);
+	k = 0;
+	for (i = 0; i < SIZE_Y; i++) {
+		move_cursor(i, 0);
+		for (j = 0; j < SIZE_X; j++, k++) puts_cons(napisy[poleco[k]]);
+	}
 	text();
 }
 
@@ -344,8 +347,15 @@ void
 klawiatura(void)
 {
 	unsigned char k = in_Inkey();
+	unsigned int joy = in_JoyKempston();
 
-	if (!k) return;
+	if (!k && !joy) return;
+
+	if (joy & in_FIRE) k = ' ';
+	else if (joy & in_LEFT) k = '5';
+	else if (joy & in_DOWN) k = '6';
+	else if (joy & in_UP) k = '7';
+	else if (joy & in_RIGHT) k = '8';
 
 	switch (k) {
 	case 27:
