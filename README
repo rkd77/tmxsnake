@@ -1,7 +1,8 @@
 Klon węża z PTSDOSa na TC 2048 lub 2068.
-Sterowanie 5,6,7,8,spacja. Należy zjadać owoce, unikać czaszek.
+Sterowanie 5,6,7,8,spacja lub Kempston joystick.
+Należy zjadać owoce, unikać czaszek.
 
 Kompilacja:
 Najpierw należy zbudować z88dk z podmienionym plikiem
-z88dk/libsrc/stdio/ansi/F6.BIN
+z88dk/libsrc/stdio/ansi/F6.BIN i ustawieniem -DA85COL dla ts2068ansi.lib
 Później już wystarczy make.
