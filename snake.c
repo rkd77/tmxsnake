@@ -14,9 +14,15 @@
 #define KROK_JABLKA 8
 #define KROK_CZACHY 4
 
-unsigned char poleco[ROZMIAR];
-unsigned char listax[ROZMIAR];
-unsigned char listay[ROZMIAR];
+long heap;
+
+//unsigned char poleco[ROZMIAR];
+//unsigned char listax[ROZMIAR];
+//unsigned char listay[ROZMIAR];
+
+unsigned char *poleco;
+unsigned char *listax;
+unsigned char *listay;
 
 void *joyfunc;
 
@@ -433,6 +439,12 @@ M_END_ISR
 int
 main(int argc, char *argv[])
 {
+	mallinit();
+	sbrk(41000, 6000);
+	poleco = malloc(ROZMIAR);
+	listax = malloc(ROZMIAR);
+	listay = malloc(ROZMIAR);
+
 	joyfunc = (zx_type() == 2) ? in_JoyTimex1 : in_JoyKempston;
 	snake();
 	wyswietl();
