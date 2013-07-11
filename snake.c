@@ -440,7 +440,7 @@ int
 main(int argc, char *argv[])
 {
 	mallinit();
-	sbrk(41000, 6000);
+	sbrk(44000, 4000);
 	poleco = malloc(ROZMIAR);
 	listax = malloc(ROZMIAR);
 	listay = malloc(ROZMIAR);
