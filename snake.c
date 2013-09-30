@@ -368,6 +368,23 @@ klawiatura(void)
 	else if (joy & in_RIGHT) k = '8';
 
 	switch (k) {
+	case 8:
+		k = '5';
+		break;
+	case 9:
+		k = '8';
+		break;
+	case 10:
+		k = '6';
+		break;
+	case 11:
+		k = '7';
+		break;
+	default:
+		break;
+	}
+
+	switch (k) {
 	case 27:
 		/*wypad = 1;*/
 		break;
@@ -400,7 +417,7 @@ M_BEGIN_ISR(narysuj)
 	if (przerwa) goto end2;
 
 	licznik++;
-	if (licznik < 3) goto end2;
+	if (licznik < 4) goto end2;
 
 	w_przerwaniu = 1;
 	licznik = 0;
