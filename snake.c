@@ -412,11 +412,11 @@ klawiatura(void)
 }
 
 M_BEGIN_ISR(narysuj)
-	if (w_przerwaniu) goto end;
-
 	if (przerwa) goto end2;
 
 	licznik++;
+	if (w_przerwaniu) goto end;
+
 	if (licznik < 4) goto end2;
 
 	w_przerwaniu = 1;
