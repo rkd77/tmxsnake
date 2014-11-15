@@ -5,14 +5,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define SIZE_X 40
+#define SIZE_X 32
 #define SIZE_Y 24
 #define ROZMIAR (SIZE_X * SIZE_Y)
 
 #define ROZMIAR2 (ROZMIAR + ROZMIAR)
 
-#define KROK_JABLKA 8
-#define KROK_CZACHY 4
+#define KROK_JABLKA 6
+#define KROK_CZACHY 3
 
 long heap;
 
@@ -248,7 +248,7 @@ void
 snake(void)
 {
 	rekord = 0;
-	start(8, 4);
+	start(6, 3);
 }
 
 void
@@ -328,15 +328,15 @@ void
 text(void)
 {
 	move_cursor(0, 4);
-	if (zjedzone <= 0xf) puts_cons("000");
-	else if (zjedzone <= 0xff) puts_cons("00");
-	else if (zjedzone <= 0xfff) puts_cons("0");
-	printf("%x", zjedzone);
+	if (zjedzone < 10) puts_cons("000");
+	else if (zjedzone < 100) puts_cons("00");
+	else if (zjedzone < 1000) puts_cons("0");
+	printf("%u", zjedzone);
 	move_cursor(0, 10);
-	if (rekord <= 0xf) puts_cons("000");
-	else if (rekord <= 0xff) puts_cons("00");
-	else if (rekord <= 0xfff) puts_cons("0");
-	printf("%x", rekord);
+	if (rekord < 10) puts_cons("000");
+	else if (rekord < 100) puts_cons("00");
+	else if (rekord < 1000) puts_cons("0");
+	printf("%u", rekord);
 	zjadl = 0;
 }
 
