@@ -76,9 +76,9 @@ uint in_KbdState;               // reserved
 #define glowa_prawo 'P'
 #define poziom 'H'
 #define pion 'V'
-#define lewo_gora 'Y'
+#define lewo_gora 'U'
 #define lewo_dol 'X'
-#define prawo_gora 'u'
+#define prawo_gora 'Y'
 #define prawo_dol 'Z'
 
 #define tlo1 ' '
@@ -92,9 +92,9 @@ uint in_KbdState;               // reserved
 #define glowa_prawo1 'p'
 #define poziom1 'h'
 #define pion1 'v'
-#define lewo_gora1 'y'
+#define lewo_gora1 'u'
 #define lewo_dol1 'x'
-#define prawo_gora1 'u'
+#define prawo_gora1 'y'
 #define prawo_dol1 'z'
 
 char *napisy[] = {
@@ -109,10 +109,10 @@ char *napisy[] = {
 	"Pp",
 	"Hh",
 	"Vv",
-	"Yy", //"Uu", "11"
-	"Xx", //"Xx", "22"
-	"Uu", //"Yy", "33"
-	"Zz", //"Zz", "44"
+	"Uu", //"Uu", "11"
+	"Zz", //"Xx", "22"
+	"Yy", //"Yy", "33"
+	"Xx", //"Zz", "44"
 };
 
 #define LEWO 0
