@@ -161,9 +161,11 @@ losuj(unsigned char co)
 	unsigned short indeks2;
 	unsigned char x, y;
 
-	do {
+	do
+	{
 		indeks = rand() % ROZMIAR;
-	} while (poleco[indeks] != TLO);
+	}
+	while (poleco[indeks] != TLO);
 
 	x = indeks % SIZE_X;
 	y = indeks / SIZE_X;
@@ -208,18 +210,21 @@ start(unsigned short l_jablek, unsigned short l_czach)
 	unsigned char i, x, y;
 
 	zjedzone = 0;
-	for (i = KROK_JABLKA; i < l_jablek; i += KROK_JABLKA) {
+	for (i = KROK_JABLKA; i < l_jablek; i += KROK_JABLKA)
+	{
 		zjedzone += i * 2;
 	}
 
 	memset(poleco, TLO, ROZMIAR);
 
-	for (x = 0; x < SIZE_X; x++) {
+	for (x = 0; x < SIZE_X; x++)
+	{
 		poleco[x] = SCIANA;
 		poleco[(SIZE_Y - 1) * SIZE_X + x] = SCIANA;
 	}
 
-	for (y = 1; y < SIZE_Y; y++) {
+	for (y = 1; y < SIZE_Y; y++)
+	{
 		poleco[y * SIZE_X] = SCIANA;
 		poleco[y * SIZE_X + SIZE_X - 1] = SCIANA;
 	}
@@ -259,11 +264,15 @@ ruch(void)
 	int n = numer(y, x);
 	int gdzie;
 
-	if (zjadl_jablko) {
-		if (stary_kierunek == nowy_kierunek) {
+	if (zjadl_jablko)
+	{
+		if (stary_kierunek == nowy_kierunek)
+		{
 			if (stary_kierunek == LEWO || stary_kierunek == PRAWO) poleco[n] = POZIOM;
 			else poleco[n] = PION;
-		} else {
+		}
+		else
+		{
 			if (stary_kierunek == LEWO && nowy_kierunek == GORA) poleco[n] = LEWO_GORA;
 			else if (stary_kierunek == LEWO && (nowy_kierunek == DOL || nowy_kierunek == PRAWO)) poleco[n] = LEWO_DOL;
 			else if (stary_kierunek == PRAWO && (nowy_kierunek == GORA || nowy_kierunek == LEWO)) poleco[n] = PRAWO_GORA;
@@ -280,7 +289,8 @@ ruch(void)
 	x += x_krok[nowy_kierunek];
 	y += y_krok[nowy_kierunek];
 	n = numer(y, x);
-	switch (poleco[n]) {
+	switch (poleco[n])
+	{
 	case TLO:
 		pop_back();
 		break;
@@ -295,10 +305,13 @@ ruch(void)
 		zjedzone++;
 		zjadl = 1;
 		if (zjedzone > rekord) rekord = zjedzone;
-		if (liczba_wisienek == 0) {
+		if (liczba_wisienek == 0)
+		{
 			koniec = 1;
 			przerwa = 1;
-		} else {
+		}
+		else
+		{
 			losuj(CZACHA);
 		}
 		break;
@@ -346,7 +359,8 @@ wyswietl(void)
 	int i,j,k;
 
 	k = 0;
-	for (i = 0; i < SIZE_Y; i++) {
+	for (i = 0; i < SIZE_Y; i++)
+	{
 		move_cursor(i, 0);
 		for (j = 0; j < SIZE_X; j++, k++) puts_cons(napisy[poleco[k]]);
 	}
@@ -367,7 +381,8 @@ klawiatura(void)
 	else if (joy & in_UP) k = '7';
 	else if (joy & in_RIGHT) k = '8';
 
-	switch (k) {
+	switch (k)
+	{
 	case 8:
 		k = '5';
 		break;
@@ -384,20 +399,26 @@ klawiatura(void)
 		break;
 	}
 
-	switch (k) {
+	switch (k)
+	{
 	case 27:
 		/*wypad = 1;*/
 		break;
 	case ' ':
-		if (koniec) {
-			if (blad) {
+		if (koniec)
+		{
+			if (blad)
+			{
 				start1();
 				wyswietl();
-			} else {
+			}
+			else
+			{
 				start(liczba_jablek + KROK_JABLKA, liczba_czach + KROK_CZACHY);
 				wyswietl();
 			}
-		} else if (!przerwa) przerwa = 1;
+		}
+		else if (!przerwa) przerwa = 1;
 		break;
 	case '5':
 	case '6':
@@ -470,7 +491,8 @@ main(int argc, char *argv[])
 	ei
 #endasm
 
-	while (1) {
+	while (1)
+	{
 #asm
 	halt
 #endasm
