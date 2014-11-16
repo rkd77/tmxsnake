@@ -11,8 +11,8 @@
 
 #define ROZMIAR2 (ROZMIAR + ROZMIAR)
 
-#define KROK_JABLKA 6
-#define KROK_CZACHY 3
+#define KROK_JABLKA 8
+#define KROK_CZACHY 4
 
 long heap;
 
@@ -98,21 +98,21 @@ uint in_KbdState;               // reserved
 #define prawo_dol1 'z'
 
 char *napisy[] = {
-	"  ",
-	"Ss",
-	"Oo",
-	"Jj",
-	"Ww",
-	"Ll",
-	"Nn",
-	"Gg",
-	"Pp",
-	"Hh",
-	"Vv",
-	"Uu", //"Uu", "11"
-	"Zz", //"Xx", "22"
-	"Yy", //"Yy", "33"
-	"Xx", //"Zz", "44"
+	"  ", /* TLO */
+	"Ss", /* SCIANA */
+	"Oo", /* CZACHA */
+	"Jj", /* JABLKO */
+	"Ww", /* WISIENKI */
+	"Ll", /* GLOWA LEWO */
+	"Pp", /* GLOWA DOL */
+	"Nn", /* GLOWA GORA */
+	"Gg", /* GLOWA PRAWO */
+	"Hh", /* POZIOM */
+	"Vv", /* PION */
+	"Uu", /* LEWO GORA */
+	"Zz", /* LEWO DOL */
+	"Yy", /* PRAWO GORA */
+	"Xx", /* PRAWO DOL */
 };
 
 #define LEWO 0
@@ -248,7 +248,7 @@ void
 snake(void)
 {
 	rekord = 0;
-	start(6, 3);
+	start(8, 4);
 }
 
 void
@@ -328,15 +328,15 @@ void
 text(void)
 {
 	move_cursor(0, 4);
-	if (zjedzone < 10) puts_cons("000");
-	else if (zjedzone < 100) puts_cons("00");
-	else if (zjedzone < 1000) puts_cons("0");
-	printf("%u", zjedzone);
+	if (zjedzone <= 0xf) puts_cons("000");
+	else if (zjedzone <= 0xff) puts_cons("00");
+	else if (zjedzone <= 0xfff) puts_cons("0");
+	printf("%x", zjedzone);
 	move_cursor(0, 10);
-	if (rekord < 10) puts_cons("000");
-	else if (rekord < 100) puts_cons("00");
-	else if (rekord < 1000) puts_cons("0");
-	printf("%u", rekord);
+	if (rekord <= 0xf) puts_cons("000");
+	else if (rekord <= 0xff) puts_cons("00");
+	else if (rekord <= 0xfff) puts_cons("0");
+	printf("%x", rekord);
 	zjadl = 0;
 }
 
@@ -434,13 +434,6 @@ M_BEGIN_ISR(narysuj)
 
 	puts_cons(napisy[poleco[n]]);
 
-#if 0
-	if (blad) {
-		dc->setForeground(FXRGB(255, 0, 0));
-	} else {
-		dc->setForeground(FXRGB(0, 255, 0));
-	}
-#endif
 	move_cursor(cur_y, cur_x + cur_x);
 	n = numer(cur_y, cur_x);
 	puts_cons(napisy[poleco[n]]);
