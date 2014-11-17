@@ -490,6 +490,8 @@ main(int argc, char *argv[])
 		break;
 	}
 
+	srand(wpeek(23672));
+
 	snake();
 	wyswietl();
 #asm
