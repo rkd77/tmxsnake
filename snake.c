@@ -14,11 +14,9 @@
 #define KROK_JABLKA 8
 #define KROK_CZACHY 4
 
-long heap;
+unsigned char *joy = (unsigned char *)23297;
 
-//unsigned char poleco[ROZMIAR];
-//unsigned char listax[ROZMIAR];
-//unsigned char listay[ROZMIAR];
+long heap;
 
 unsigned char *poleco;
 unsigned char *listax;
@@ -41,11 +39,6 @@ unsigned char w_przerwaniu = 0;
 
 unsigned char *gdzie;
 int n;
-
-uchar in_KeyDebounce = 1;       // no debouncing
-uchar in_KeyStartRepeat = 20;   // wait 20/50s before key starts repeating
-uchar in_KeyRepeatPeriod = 5;  // repeat every 10/50s
-uint in_KbdState;               // reserved
 
 #define START 68
 
@@ -368,12 +361,12 @@ wyswietl(void)
 }
 
 void
-klawiatura(void)
+joystick(void)
 {
-	unsigned char k = in_Inkey();
 	unsigned int joy = joyfunc();
+	unsigned char k;
 
-	if (!k && !joy) return;
+	if (!joy) return;
 
 	if (joy & in_FIRE) k = ' ';
 	else if (joy & in_LEFT) k = '5';
@@ -381,6 +374,7 @@ klawiatura(void)
 	else if (joy & in_UP) k = '7';
 	else if (joy & in_RIGHT) k = '8';
 
+#if 0
 	switch (k)
 	{
 	case 8:
@@ -398,7 +392,7 @@ klawiatura(void)
 	default:
 		break;
 	}
-
+#endif
 	switch (k)
 	{
 	case 27:
@@ -461,7 +455,7 @@ M_BEGIN_ISR(narysuj)
 
 	if (zjadl) text();
 end2:
-	klawiatura();
+	joystick();
 
 	w_przerwaniu = 0;
 end:
@@ -476,7 +470,26 @@ main(int argc, char *argv[])
 	listax = malloc(ROZMIAR);
 	listay = malloc(ROZMIAR);
 
-	joyfunc = (zx_type() == 2) ? in_JoyTimex1 : in_JoyKempston;
+	switch(*joy)
+	{
+	case 1:
+		joyfunc = in_JoyTimex1;
+		break;
+	case 2:
+		joyfunc = in_JoyTimex2;
+		break;
+	case 3:
+		joyfunc = in_JoyKempston;
+		break;
+	default:
+	case 4:
+		joyfunc = in_JoySinclair1;
+		break;
+	case 5:
+		joyfunc = in_JoySinclair2;
+		break;
+	}
+
 	snake();
 	wyswietl();
 #asm
