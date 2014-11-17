@@ -4,5 +4,5 @@ Należy zjadać owoce, unikać czaszek.
 
 Kompilacja:
 Najpierw należy zbudować z88dk z podmienionym plikiem
-z88dk/libsrc/stdio/ansi/F6.BIN i ustawieniem -DA85COL dla ts2068ansi.lib
+z88dk/libsrc/stdio/ansi/F8.BIN i ustawieniem -DA64COL dla ts2068ansi.lib
 Później już wystarczy make.
