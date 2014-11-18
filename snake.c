@@ -14,9 +14,12 @@
 #define KROK_JABLKA 8
 #define KROK_CZACHY 4
 
+#define PREDKOSC 2
+
 unsigned char *joy = (unsigned char *)23297;
 unsigned char *joy2 = (unsigned char *)23298;
 
+unsigned char zmiana;
 
 long heap;
 
@@ -588,58 +591,61 @@ joystick2(void)
 
 M_BEGIN_ISR(narysuj)
 	licznik++;
-	if (w_przerwaniu) goto end;
-	w_przerwaniu = 1;
-	if (licznik < 4) goto joy_pierwszy;
+	if (licznik < PREDKOSC) goto end;
 	licznik = 0;
 
-	if (przerwa) goto joy_pierwszy;
+	if (w_przerwaniu) goto end;
+	w_przerwaniu = 1;
+	if (zmiana)
+	{
+		if (przerwa) goto joy_pierwszy;
 
-	ruch();
+		ruch();
 
-	move_cursor(last_y, last_x + last_x);
-	n = numer(last_y, last_x);
-	puts_cons(napisy[poleco[n]]);
+		move_cursor(last_y, last_x + last_x);
+		n = numer(last_y, last_x);
+		puts_cons(napisy[poleco[n]]);
 
-	move_cursor(prev_y, prev_x + prev_x);
+		move_cursor(prev_y, prev_x + prev_x);
 
-	n = numer(prev_y, prev_x);
+		n = numer(prev_y, prev_x);
 
-	puts_cons(napisy[poleco[n]]);
+		puts_cons(napisy[poleco[n]]);
 
-	move_cursor(cur_y, cur_x + cur_x);
-	n = numer(cur_y, cur_x);
-	puts_cons(napisy[poleco[n]]);
+		move_cursor(cur_y, cur_x + cur_x);
+		n = numer(cur_y, cur_x);
+		puts_cons(napisy[poleco[n]]);
 
-	if (zjadl) text();
-
+		if (zjadl) text();
 joy_pierwszy:
-	joystick();
+		joystick();
+		zmiana = 0;
+	}
+	else
+	{
+		if (przerwa2) goto joy_drugi;
 
-	if (licznik && (licznik < 4)) goto joy_drugi;
+		ruch2();
 
-	if (przerwa2) goto joy_drugi;
+		move_cursor(last_y_2, last_x_2 + last_x_2);
+		n2 = numer(last_y_2, last_x_2);
+		puts_cons(napisy[poleco[n2]]);
 
-	ruch2();
+		move_cursor(prev_y_2, prev_x_2 + prev_x_2);
 
-	move_cursor(last_y_2, last_x_2 + last_x_2);
-	n2 = numer(last_y_2, last_x_2);
-	puts_cons(napisy[poleco[n2]]);
+		n2 = numer(prev_y_2, prev_x_2);
 
-	move_cursor(prev_y_2, prev_x_2 + prev_x_2);
+		puts_cons(napisy[poleco[n2]]);
 
-	n2 = numer(prev_y_2, prev_x_2);
+		move_cursor(cur_y_2, cur_x_2 + cur_x_2);
+		n2 = numer(cur_y_2, cur_x_2);
+		puts_cons(napisy[poleco[n2]]);
 
-	puts_cons(napisy[poleco[n2]]);
-
-	move_cursor(cur_y_2, cur_x_2 + cur_x_2);
-	n2 = numer(cur_y_2, cur_x_2);
-	puts_cons(napisy[poleco[n2]]);
-
-	if (zjadl2) text();
+		if (zjadl2) text();
 joy_drugi:
-	joystick2();
-
+		joystick2();
+		zmiana = 1;
+	}
 	w_przerwaniu = 0;
 end:
 M_END_ISR
