@@ -589,8 +589,8 @@ joystick2(void)
 M_BEGIN_ISR(narysuj)
 	licznik++;
 	if (w_przerwaniu) goto end;
-	if (licznik < 4) goto joy_pierwszy;
 	w_przerwaniu = 1;
+	if (licznik < 4) goto joy_pierwszy;
 	licznik = 0;
 
 	if (przerwa) goto joy_pierwszy;
@@ -615,6 +615,8 @@ M_BEGIN_ISR(narysuj)
 
 joy_pierwszy:
 	joystick();
+
+	if (licznik && (licznik < 4)) goto joy_drugi;
 
 	if (przerwa2) goto joy_drugi;
 
