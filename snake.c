@@ -138,7 +138,7 @@ short int y_krok[] = { 0, 1, -1, 0 };
 int
 numer(unsigned char y, unsigned char x)
 {
-	return y * SIZE_X + x;
+	return (y << 5) + x;
 }
 
 void
@@ -206,8 +206,9 @@ losuj(unsigned char co, unsigned char *last_x, unsigned char *last_y)
 	}
 	while (poleco[indeks] != TLO);
 
-	x = indeks % SIZE_X;
-	y = indeks / SIZE_X;
+	x = indeks & 31;
+	y = indeks >> 5;
+
 
 	poleco[indeks] = co;
 
