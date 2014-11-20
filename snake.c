@@ -59,6 +59,9 @@ int n2;
 
 struct in_UDK keyb;
 
+unsigned int spacja;
+unsigned int caps_shift;
+
 #define START 68
 
 #define TLO 0
@@ -597,6 +600,9 @@ narysuj(void)
 	{
 		for (licznik = 0; licznik < *powolnosc; licznik++);
 
+		if (in_KeyPressed(spacja) && in_KeyPressed(caps_shift)) break;
+
+
 		if (zmiana)
 		{
 			if (przerwa) goto joy_pierwszy;
@@ -671,6 +677,9 @@ main(int argc, char *argv[])
 	keyb.up    = in_LookupKey('q');
 	keyb.down  = in_LookupKey('a');
 
+	spacja = in_LookupKey(' ');
+	caps_shift = in_LookupKey(255);
+
 	switch(*joy)
 	{
 	case 1:
@@ -724,5 +733,10 @@ main(int argc, char *argv[])
 
 	narysuj();
 
+#asm
+	xor a
+	out (255),a
+	ei
+#endasm
 	return 0;
 }
