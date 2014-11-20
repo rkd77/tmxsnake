@@ -1,4 +1,3 @@
-#include <im2.h>
 #include <input.h>
 #include <spectrum.h>
 #include <stdio.h>
@@ -14,10 +13,9 @@
 #define KROK_JABLKA 8
 #define KROK_CZACHY 4
 
-#define PREDKOSC 2
-
 unsigned char *joy = (unsigned char *)23297;
 unsigned char *joy2 = (unsigned char *)23298;
+unsigned short *powolnosc = (unsigned short *)23299;
 
 unsigned char zmiana;
 
@@ -52,7 +50,7 @@ unsigned char stary_kierunek_2;
 unsigned char zjadl_jablko_2;
 
 
-unsigned char licznik = 0;
+unsigned short licznik = 0;
 unsigned char w_przerwaniu = 0;
 
 unsigned char *gdzie;
@@ -590,70 +588,72 @@ joystick2(void)
 }
 
 
-M_BEGIN_ISR(narysuj)
-	licznik++;
-	if (licznik < PREDKOSC) goto end;
-	licznik = 0;
-
-	if (w_przerwaniu) goto end;
-	w_przerwaniu = 1;
-	if (zmiana)
+void
+narysuj(void)
+{
+	while (1)
 	{
-		if (przerwa) goto joy_pierwszy;
+		for (licznik = 0; licznik < *powolnosc; licznik++);
 
-		ruch();
+		if (zmiana)
+		{
+			if (przerwa) goto joy_pierwszy;
 
-		move_cursor(last_y, last_x + last_x);
-		n = numer(last_y, last_x);
-		puts_cons(napisy[poleco[n]]);
+			ruch();
 
-		move_cursor(prev_y, prev_x + prev_x);
+			move_cursor(last_y, last_x + last_x);
+			n = numer(last_y, last_x);
+			puts_cons(napisy[poleco[n]]);
 
-		n = numer(prev_y, prev_x);
+			move_cursor(prev_y, prev_x + prev_x);
 
-		puts_cons(napisy[poleco[n]]);
+			n = numer(prev_y, prev_x);
 
-		move_cursor(cur_y, cur_x + cur_x);
-		n = numer(cur_y, cur_x);
-		puts_cons(napisy[poleco[n]]);
+			puts_cons(napisy[poleco[n]]);
 
-		if (zjadl) text();
+			move_cursor(cur_y, cur_x + cur_x);
+			n = numer(cur_y, cur_x);
+			puts_cons(napisy[poleco[n]]);
+
+			if (zjadl) text();
 joy_pierwszy:
-		joystick();
-		zmiana = 0;
-	}
-	else
-	{
-		if (przerwa2) goto joy_drugi;
+			joystick();
+			zmiana = 0;
+		}
+		else
+		{
+			if (przerwa2) goto joy_drugi;
 
-		ruch2();
+			ruch2();
 
-		move_cursor(last_y_2, last_x_2 + last_x_2);
-		n2 = numer(last_y_2, last_x_2);
-		puts_cons(napisy[poleco[n2]]);
+			move_cursor(last_y_2, last_x_2 + last_x_2);
+			n2 = numer(last_y_2, last_x_2);
+			puts_cons(napisy[poleco[n2]]);
 
-		move_cursor(prev_y_2, prev_x_2 + prev_x_2);
+			move_cursor(prev_y_2, prev_x_2 + prev_x_2);
 
-		n2 = numer(prev_y_2, prev_x_2);
+			n2 = numer(prev_y_2, prev_x_2);
 
-		puts_cons(napisy[poleco[n2]]);
+			puts_cons(napisy[poleco[n2]]);
 
-		move_cursor(cur_y_2, cur_x_2 + cur_x_2);
-		n2 = numer(cur_y_2, cur_x_2);
-		puts_cons(napisy[poleco[n2]]);
+			move_cursor(cur_y_2, cur_x_2 + cur_x_2);
+			n2 = numer(cur_y_2, cur_x_2);
+			puts_cons(napisy[poleco[n2]]);
 
-		if (zjadl2) text();
+			if (zjadl2) text();
 joy_drugi:
-		joystick2();
-		zmiana = 1;
+			joystick2();
+			zmiana = 1;
+		}
 	}
-	w_przerwaniu = 0;
-end:
-M_END_ISR
+}
 
 int
 main(int argc, char *argv[])
 {
+#asm
+	di
+#endasm
 	mallinit();
 	sbrk(46000, 6000);
 	poleco = malloc(ROZMIAR);
@@ -682,7 +682,6 @@ main(int argc, char *argv[])
 		break;
 	}
 
-
 	switch(*joy2)
 	{
 	case 1:
@@ -707,23 +706,8 @@ main(int argc, char *argv[])
 
 	snake();
 	wyswietl();
-#asm
-	di
-#endasm
 
-	im2_Init(0xfd00);
-	memset(0xfd00, 0xfe, 257);
-	bpoke(0xfefe, 195);
-	wpoke(0xfeff, narysuj);
-#asm
-	ei
-#endasm
+	narysuj();
 
-	while (1)
-	{
-#asm
-	halt
-#endasm
-	}
 	return 0;
 }
