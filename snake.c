@@ -57,6 +57,8 @@ unsigned char *gdzie;
 int n;
 int n2;
 
+struct in_UDK keyb;
+
 #define START 68
 
 #define TLO 0
@@ -496,7 +498,7 @@ wyswietl(void)
 void
 joystick(void)
 {
-	unsigned int joy = joyfunc();
+	unsigned int joy = joyfunc(&keyb);
 	unsigned char k;
 
 	if (!joy) return;
@@ -543,7 +545,7 @@ joystick(void)
 void
 joystick2(void)
 {
-	unsigned int joy = joyfunc2();
+	unsigned int joy = joyfunc2(&keyb);
 	unsigned char k;
 
 	if (!joy) return;
@@ -662,6 +664,13 @@ main(int argc, char *argv[])
 	listax2 = malloc(ROZMIAR);
 	listay2 = malloc(ROZMIAR);
 
+	// initialize the struct_in_UDK with keys for use with the keyboard joystick
+	keyb.fire  = in_LookupKey('m');
+	keyb.left  = in_LookupKey('o');
+	keyb.right = in_LookupKey('p');
+	keyb.up    = in_LookupKey('q');
+	keyb.down  = in_LookupKey('a');
+
 	switch(*joy)
 	{
 	case 1:
@@ -673,12 +682,15 @@ main(int argc, char *argv[])
 	case 3:
 		joyfunc = in_JoyKempston;
 		break;
-	default:
 	case 4:
 		joyfunc = in_JoySinclair1;
 		break;
 	case 5:
 		joyfunc = in_JoySinclair2;
+		break;
+	default:
+	case 6:
+		joyfunc = in_JoyKeyboard;
 		break;
 	}
 
@@ -693,12 +705,15 @@ main(int argc, char *argv[])
 	case 3:
 		joyfunc2 = in_JoyKempston;
 		break;
-	default:
 	case 4:
 		joyfunc2 = in_JoySinclair1;
 		break;
 	case 5:
 		joyfunc2 = in_JoySinclair2;
+		break;
+	default:
+	case 6:
+		joyfunc2 = in_JoyKeyboard;
 		break;
 	}
 
