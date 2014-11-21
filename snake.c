@@ -45,9 +45,9 @@ signed short pocz, kon;
 signed short pocz2, kon2;
 unsigned short liczba_wisienek;
 unsigned char stary_kierunek;
-unsigned char zjadl_jablko;
+unsigned char zjadl_1;
 unsigned char stary_kierunek_2;
-unsigned char zjadl_jablko_2;
+unsigned char zjadl_2;
 
 
 unsigned short licznik = 0;
@@ -293,7 +293,7 @@ start(unsigned short l_jablek, unsigned short l_czach)
 	kon = kon2 = 0;
 	losuj_weza();
 	losuj_weza_2();
-	koniec = blad = zjadl_jablko = zjadl_jablko_2 = 0;
+	koniec = blad = zjadl_1 = zjadl_2 = 0;
 	przerwa = przerwa2 = 1;
 	zjadl = zjadl2 = 1;
 }
@@ -319,7 +319,7 @@ ruch(void)
 	int n = numer(y, x);
 	int gdzie;
 
-	if (zjadl_jablko)
+	if (zjadl_1)
 	{
 		if (stary_kierunek == nowy_kierunek)
 		{
@@ -351,14 +351,14 @@ ruch(void)
 		break;
 	case JABLKO:
 		zjedzone++;
-		zjadl = zjadl_jablko = 1;
+		zjadl = zjadl_1 = 1;
 		if (zjedzone > rekord) rekord = zjedzone;
 		losuj(WISIENKA, &last_x, &last_y);
 		break;
 	case WISIENKA:
 		liczba_wisienek--;
 		zjedzone++;
-		zjadl = 1;
+		zjadl = zjadl_1 = 1;
 		if (zjedzone > rekord) rekord = zjedzone;
 		if (liczba_wisienek == 0)
 		{
@@ -395,7 +395,7 @@ ruch2(void)
 	int n = numer(y, x);
 	int gdzie;
 
-	if (zjadl_jablko_2)
+	if (zjadl_2)
 	{
 		if (stary_kierunek_2 == nowy_kierunek_2)
 		{
@@ -427,14 +427,14 @@ ruch2(void)
 		break;
 	case JABLKO:
 		zjedzone++;
-		zjadl = zjadl_jablko_2 = 1;
+		zjadl = zjadl_2 = 1;
 		if (zjedzone > rekord) rekord = zjedzone;
 		losuj(WISIENKA, &last_x_2, &last_y_2);
 		break;
 	case WISIENKA:
 		liczba_wisienek--;
 		zjedzone++;
-		zjadl = 1;
+		zjadl = zjadl_2 = 1;
 		if (zjedzone > rekord) rekord = zjedzone;
 		if (liczba_wisienek == 0)
 		{
