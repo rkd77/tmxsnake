@@ -605,51 +605,47 @@ narysuj(void)
 
 		if (zmiana)
 		{
-			if (przerwa) goto joy_pierwszy;
+			if (!przerwa)
+			{
+				ruch();
 
-			ruch();
+				move_cursor(last_y, last_x + last_x);
+				n = numer(last_y, last_x);
+				puts_cons(napisy[poleco[n]]);
 
-			move_cursor(last_y, last_x + last_x);
-			n = numer(last_y, last_x);
-			puts_cons(napisy[poleco[n]]);
+				move_cursor(prev_y, prev_x + prev_x);
+				n = numer(prev_y, prev_x);
+				puts_cons(napisy[poleco[n]]);
 
-			move_cursor(prev_y, prev_x + prev_x);
+				move_cursor(cur_y, cur_x + cur_x);
+				n = numer(cur_y, cur_x);
+				puts_cons(napisy[poleco[n]]);
 
-			n = numer(prev_y, prev_x);
-
-			puts_cons(napisy[poleco[n]]);
-
-			move_cursor(cur_y, cur_x + cur_x);
-			n = numer(cur_y, cur_x);
-			puts_cons(napisy[poleco[n]]);
-
-			if (zjadl) text();
-joy_pierwszy:
+				if (zjadl) text();
+			}
 			joystick();
 			zmiana = 0;
 		}
 		else
 		{
-			if (przerwa2) goto joy_drugi;
+			if (!przerwa2)
+			{
+				ruch2();
 
-			ruch2();
+				move_cursor(last_y_2, last_x_2 + last_x_2);
+				n2 = numer(last_y_2, last_x_2);
+				puts_cons(napisy[poleco[n2]]);
 
-			move_cursor(last_y_2, last_x_2 + last_x_2);
-			n2 = numer(last_y_2, last_x_2);
-			puts_cons(napisy[poleco[n2]]);
+				move_cursor(prev_y_2, prev_x_2 + prev_x_2);
+				n2 = numer(prev_y_2, prev_x_2);
+				puts_cons(napisy[poleco[n2]]);
 
-			move_cursor(prev_y_2, prev_x_2 + prev_x_2);
+				move_cursor(cur_y_2, cur_x_2 + cur_x_2);
+				n2 = numer(cur_y_2, cur_x_2);
+				puts_cons(napisy[poleco[n2]]);
 
-			n2 = numer(prev_y_2, prev_x_2);
-
-			puts_cons(napisy[poleco[n2]]);
-
-			move_cursor(cur_y_2, cur_x_2 + cur_x_2);
-			n2 = numer(cur_y_2, cur_x_2);
-			puts_cons(napisy[poleco[n2]]);
-
-			if (zjadl2) text();
-joy_drugi:
+				if (zjadl2) text();
+			}
 			joystick2();
 			zmiana = 1;
 		}
