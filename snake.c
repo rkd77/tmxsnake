@@ -17,8 +17,6 @@ unsigned char *joy = (unsigned char *)23297;
 unsigned char *joy2 = (unsigned char *)23298;
 unsigned short *powolnosc = (unsigned short *)23299;
 
-unsigned char zmiana;
-
 long heap;
 
 unsigned char *poleco;
@@ -599,61 +597,55 @@ narysuj(void)
 	while (1)
 	{
 		for (licznik = 0; licznik < *powolnosc; licznik++);
-
 		if (in_KeyPressed(spacja) && in_KeyPressed(caps_shift)) break;
 
-
-		if (zmiana)
+		if (!przerwa)
 		{
-			if (!przerwa)
-			{
-				ruch();
+			ruch();
 
-				move_cursor(last_y, last_x + last_x);
-				n = numer(last_y, last_x);
-				puts_cons(napisy[poleco[n]]);
+			move_cursor(last_y, last_x + last_x);
+			n = numer(last_y, last_x);
+			puts_cons(napisy[poleco[n]]);
 
-				move_cursor(prev_y, prev_x + prev_x);
-				n = numer(prev_y, prev_x);
-				puts_cons(napisy[poleco[n]]);
+			move_cursor(prev_y, prev_x + prev_x);
+			n = numer(prev_y, prev_x);
+			puts_cons(napisy[poleco[n]]);
 
-				move_cursor(cur_y, cur_x + cur_x);
-				n = numer(cur_y, cur_x);
+			move_cursor(cur_y, cur_x + cur_x);
+			n = numer(cur_y, cur_x);
 
-				if (blad) puts_cons("\033[7m");
-				puts_cons(napisy[poleco[n]]);
-				if (blad) puts_cons("\033[27m");
+			if (blad) puts_cons("\033[7m");
+			puts_cons(napisy[poleco[n]]);
+			if (blad) puts_cons("\033[27m");
 
-				if (zjadl) text();
-			}
-			joystick();
-			zmiana = 0;
+			if (zjadl) text();
 		}
-		else
+		joystick();
+
+		for (licznik = 0; licznik < *powolnosc; licznik++);
+		if (in_KeyPressed(spacja) && in_KeyPressed(caps_shift)) break;
+
+		if (!przerwa2)
 		{
-			if (!przerwa2)
-			{
-				ruch2();
+			ruch2();
 
-				move_cursor(last_y_2, last_x_2 + last_x_2);
-				n2 = numer(last_y_2, last_x_2);
-				puts_cons(napisy[poleco[n2]]);
+			move_cursor(last_y_2, last_x_2 + last_x_2);
+			n2 = numer(last_y_2, last_x_2);
+			puts_cons(napisy[poleco[n2]]);
 
-				move_cursor(prev_y_2, prev_x_2 + prev_x_2);
-				n2 = numer(prev_y_2, prev_x_2);
-				puts_cons(napisy[poleco[n2]]);
+			move_cursor(prev_y_2, prev_x_2 + prev_x_2);
+			n2 = numer(prev_y_2, prev_x_2);
+			puts_cons(napisy[poleco[n2]]);
 
-				move_cursor(cur_y_2, cur_x_2 + cur_x_2);
-				n2 = numer(cur_y_2, cur_x_2);
-				if (blad) puts_cons("\033[7m");
-				puts_cons(napisy[poleco[n2]]);
-				if (blad) puts_cons("\033[27m");
+			move_cursor(cur_y_2, cur_x_2 + cur_x_2);
+			n2 = numer(cur_y_2, cur_x_2);
+			if (blad) puts_cons("\033[7m");
+			puts_cons(napisy[poleco[n2]]);
+			if (blad) puts_cons("\033[27m");
 
-				if (zjadl2) text();
-			}
-			joystick2();
-			zmiana = 1;
+			if (zjadl2) text();
 		}
+		joystick2();
 	}
 }
 
