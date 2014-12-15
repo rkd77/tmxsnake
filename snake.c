@@ -619,7 +619,10 @@ narysuj(void)
 
 				move_cursor(cur_y, cur_x + cur_x);
 				n = numer(cur_y, cur_x);
+
+				if (blad) puts_cons("\033[7m");
 				puts_cons(napisy[poleco[n]]);
+				if (blad) puts_cons("\033[27m");
 
 				if (zjadl) text();
 			}
@@ -642,7 +645,9 @@ narysuj(void)
 
 				move_cursor(cur_y_2, cur_x_2 + cur_x_2);
 				n2 = numer(cur_y_2, cur_x_2);
+				if (blad) puts_cons("\033[7m");
 				puts_cons(napisy[poleco[n2]]);
+				if (blad) puts_cons("\033[27m");
 
 				if (zjadl2) text();
 			}
