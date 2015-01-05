@@ -493,6 +493,11 @@ wyswietl(void)
 		move_cursor(i, 0);
 		for (j = 0; j < SIZE_X; j++, k++) puts_cons(napisy[poleco[k]]);
 	}
+	/* Drugi wąż na początku w negatywie */
+	move_cursor(last_y_2, last_x_2 + last_x_2);
+	puts_cons("\033[7m");
+	puts_cons(napisy[poleco[last_y_2 * SIZE_X + last_x_2]]);
+	puts_cons("\033[27m");
 	text();
 }
 
