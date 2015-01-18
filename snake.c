@@ -517,9 +517,6 @@ joystick(void)
 
 	switch (k)
 	{
-	case 27:
-		/*wypad = 1;*/
-		break;
 	case ' ':
 		if (koniec)
 		{
@@ -564,9 +561,6 @@ joystick2(void)
 
 	switch (k)
 	{
-	case 27:
-		/*wypad = 1;*/
-		break;
 	case ' ':
 		if (koniec)
 		{
@@ -604,6 +598,7 @@ narysuj(void)
 		for (licznik = 0; licznik < *powolnosc; licznik++);
 		if (in_KeyPressed(spacja) && in_KeyPressed(caps_shift)) break;
 
+		joystick();
 		if (!przerwa)
 		{
 			ruch();
@@ -625,11 +620,11 @@ narysuj(void)
 
 			if (zjadl) text();
 		}
-		joystick();
 
 		for (licznik = 0; licznik < *powolnosc; licznik++);
 		if (in_KeyPressed(spacja) && in_KeyPressed(caps_shift)) break;
 
+		joystick2();
 		if (!przerwa2)
 		{
 			ruch2();
@@ -650,7 +645,6 @@ narysuj(void)
 
 			if (zjadl2) text();
 		}
-		joystick2();
 	}
 }
 
