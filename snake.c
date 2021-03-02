@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <conio.h>
+#include <sys/ioctl.h>
 
 #define SIZE_X 32
 #define SIZE_Y 24
@@ -19,21 +21,21 @@ unsigned short *powolnosc = (unsigned short *)23299;
 
 long heap;
 
-unsigned char *poleco;
-unsigned char *listax;
-unsigned char *listay;
+char *poleco;
+char *listax;
+char *listay;
 
-unsigned char *listax2;
-unsigned char *listay2;
+char *listax2;
+char *listay2;
 
-void *joyfunc;
-void *joyfunc2;
+unsigned int (*joyfunc)(void);
+unsigned int (*joyfunc2)(void);
 
-unsigned char last_x, last_y, prev_x, prev_y, cur_x, cur_y, nowy_kierunek;
-unsigned char last_x_2, last_y_2, prev_x_2, prev_y_2, cur_x_2, cur_y_2, nowy_kierunek_2;
+char last_x, last_y, prev_x, prev_y, cur_x, cur_y, nowy_kierunek;
+char last_x_2, last_y_2, prev_x_2, prev_y_2, cur_x_2, cur_y_2, nowy_kierunek_2;
 
-unsigned char koniec, przerwa, blad, zjadl;
-unsigned char przerwa2, zjadl2;
+char koniec, przerwa, blad, zjadl;
+char przerwa2, zjadl2;
 
 
 unsigned short int liczba_czach, liczba_jablek, zjedzone, rekord;
@@ -42,10 +44,10 @@ unsigned short int liczba_czach, liczba_jablek, zjedzone, rekord;
 signed short pocz, kon;
 signed short pocz2, kon2;
 unsigned short liczba_wisienek;
-unsigned char stary_kierunek;
-unsigned char zjadl_1;
-unsigned char stary_kierunek_2;
-unsigned char zjadl_2;
+char stary_kierunek;
+char zjadl_1;
+char stary_kierunek_2;
+char zjadl_2;
 
 
 unsigned short licznik = 0;
@@ -79,53 +81,53 @@ unsigned int caps_shift;
 #define PRAWO_DOL 14
 
 #define tlo ' '
-#define sciana 'S'
-#define czacha 'O'
-#define jablko 'J'
-#define wisienka 'W'
-#define glowa_lewo 'L'
-#define glowa_dol 'N'
-#define glowa_gora 'G'
-#define glowa_prawo 'P'
-#define poziom 'H'
-#define pion 'V'
-#define lewo_gora 'U'
-#define lewo_dol 'X'
-#define prawo_gora 'Y'
-#define prawo_dol 'Z'
+#define sciana ('S' - ' ' + 128)
+#define czacha ('O' - ' ' + 128)
+#define jablko ('J' - ' ' + 128)
+#define wisienka ('W' - ' ' + 128)
+#define glowa_lewo ('L' - ' ' + 128)
+#define glowa_dol ('P' - ' ' + 128)
+#define glowa_gora ('N' - ' ' + 128)
+#define glowa_prawo ('G' - ' ' + 128)
+#define poziom ('H' - ' ' + 128)
+#define pion ('V' - ' ' + 128)
+#define lewo_gora ('U' - ' ' + 128)
+#define lewo_dol ('Z' - ' ' + 128)
+#define prawo_gora ('Y' - ' ' + 128)
+#define prawo_dol ('X' - ' ' + 128)
 
 #define tlo1 ' '
-#define sciana1 's'
-#define czacha1 'o'
-#define jablko1 'j'
-#define wisienka1 'w'
-#define glowa_lewo1 'l'
-#define glowa_dol1 'n'
-#define glowa_gora1 'g'
-#define glowa_prawo1 'p'
-#define poziom1 'h'
-#define pion1 'v'
-#define lewo_gora1 'u'
-#define lewo_dol1 'x'
-#define prawo_gora1 'y'
-#define prawo_dol1 'z'
+#define sciana1 ('s' - ' ' + 128)
+#define czacha1 ('o' - ' ' + 128)
+#define jablko1 ('j' - ' ' + 128)
+#define wisienka1 ('w' - ' ' + 128)
+#define glowa_lewo1 ('l' - ' ' + 128)
+#define glowa_dol1 ('p' - ' ' + 128)
+#define glowa_gora1 ('n' - ' ' + 128)
+#define glowa_prawo1 ('g' - ' ' + 128)
+#define poziom1 ('h' - ' ' + 128)
+#define pion1 ('v' - ' ' + 128)
+#define lewo_gora1 ('u' - ' ' + 128)
+#define lewo_dol1 ('z' - ' ' + 128)
+#define prawo_gora1 ('y' - ' ' + 128)
+#define prawo_dol1 ('x' - ' ' + 128)
 
-char *napisy[] = {
-	"  ", /* TLO */
-	"Ss", /* SCIANA */
-	"Oo", /* CZACHA */
-	"Jj", /* JABLKO */
-	"Ww", /* WISIENKI */
-	"Ll", /* GLOWA LEWO */
-	"Pp", /* GLOWA DOL */
-	"Nn", /* GLOWA GORA */
-	"Gg", /* GLOWA PRAWO */
-	"Hh", /* POZIOM */
-	"Vv", /* PION */
-	"Uu", /* LEWO GORA */
-	"Zz", /* LEWO DOL */
-	"Yy", /* PRAWO GORA */
-	"Xx", /* PRAWO DOL */
+char napisy[][2] = {
+	{' ',' '}, /* TLO */
+	{sciana, sciana1}, /* SCIANA */
+	{czacha, czacha1}, /* CZACHA */
+	{jablko, jablko1}, /* JABLKO */
+	{wisienka, wisienka1}, /* WISIENKI */
+	{glowa_lewo, glowa_lewo1}, /* GLOWA LEWO */
+	{glowa_dol, glowa_dol1}, /* GLOWA DOL */
+	{glowa_gora, glowa_gora1}, /* GLOWA GORA */
+	{glowa_prawo, glowa_prawo1}, /* GLOWA PRAWO */
+	{poziom, poziom1}, /* POZIOM */
+	{pion, pion1}, /* PION */
+	{lewo_gora, lewo_gora1}, /* LEWO GORA */
+	{lewo_dol, lewo_dol1}, /* LEWO DOL */
+	{prawo_gora, prawo_gora1}, /* PRAWO GORA */
+	{prawo_dol, prawo_dol1}, /* PRAWO DOL */
 };
 
 #define LEWO 0
@@ -135,6 +137,106 @@ char *napisy[] = {
 
 short int x_krok[] = { -1, 0, 0, 1 };
 short int y_krok[] = { 0, 1, -1, 0 };
+
+unsigned char udgs[] = {
+0, 0, 0, 0, 0, 0, 0, 0, 
+0, 24, 60, 24, 24, 0, 24, 0, 
+0, 54, 54, 20, 0, 0, 0, 0, 
+0, 108, 254, 108, 254, 108, 0, 0, 
+0, 48, 124, 192, 120, 12, 248, 48, 
+0, 198, 204, 24, 48, 102, 198, 0, 
+0, 0, 56, 108, 58, 126, 204, 118, 
+12, 12, 24, 0, 0, 0, 0, 0, 
+0, 12, 24, 48, 48, 48, 24, 12, 
+0, 48, 24, 12, 12, 12, 24, 48, 
+0, 0, 108, 56, 254, 56, 108, 0, 
+0, 0, 24, 24, 126, 24, 24, 0, 
+0, 0, 0, 0, 0, 12, 12, 24, 
+0, 0, 0, 0, 254, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 24, 24, 
+0, 6, 12, 24, 48, 96, 192, 0, 
+0, 124, 198, 198, 214, 198, 198, 124, 
+0, 24, 120, 24, 24, 24, 24, 126, 
+0, 124, 198, 140, 56, 96, 194, 254, 
+0, 124, 198, 6, 60, 6, 198, 124, 
+0, 28, 60, 108, 204, 254, 12, 30, 
+0, 254, 192, 252, 6, 6, 198, 124, 
+0, 124, 198, 192, 252, 198, 198, 124, 
+0, 254, 198, 6, 12, 24, 48, 48, 
+0, 124, 198, 198, 124, 198, 198, 124, 
+0, 124, 198, 198, 126, 6, 198, 124, 
+0, 12, 12, 0, 0, 12, 12, 0, 
+0, 12, 12, 0, 0, 12, 12, 24, 
+0, 24, 48, 96, 192, 96, 48, 24, 
+0, 0, 0, 254, 0, 254, 0, 0, 
+0, 48, 24, 12, 6, 12, 24, 48, 
+0, 124, 198, 204, 24, 24, 0, 24, 
+0, 0, 0, 0, 0, 0, 0, 0, 
+0, 56, 108, 198, 198, 254, 198, 198, 
+0, 252, 102, 102, 124, 102, 102, 252, 
+0, 60, 102, 194, 192, 194, 102, 60, 
+0, 248, 108, 102, 102, 102, 108, 248, 
+0, 254, 102, 96, 124, 96, 102, 254, 
+0, 254, 102, 96, 124, 96, 96, 240, 
+63, 240, 230, 255, 255, 230, 240, 63, 
+0, 255, 189, 129, 231, 255, 255, 0, 
+0, 60, 24, 24, 24, 24, 24, 60, 
+28, 3, 61, 127, 127, 63, 14, 0, 
+0, 198, 204, 216, 240, 216, 204, 198, 
+7, 31, 62, 243, 242, 62, 31, 7, 
+0, 198, 198, 238, 254, 214, 198, 198, 
+7, 27, 127, 195, 153, 153, 227, 63, 
+31, 127, 227, 126, 17, 8, 7, 1, 
+63, 227, 153, 153, 194, 127, 27, 7, 
+0, 124, 198, 198, 214, 214, 124, 6, 
+0, 252, 102, 102, 124, 120, 102, 230, 
+236, 95, 43, 124, 63, 87, 43, 0, 
+0, 255, 219, 153, 24, 24, 24, 60, 
+63, 60, 18, 15, 7, 0, 0, 0, 
+63, 35, 60, 35, 63, 63, 63, 63, 
+15, 0, 57, 247, 125, 7, 7, 0, 
+0, 240, 255, 252, 253, 254, 255, 63, 
+63, 255, 254, 253, 252, 255, 248, 0, 
+0, 0, 0, 7, 15, 18, 60, 63, 
+0, 124, 96, 96, 96, 96, 96, 124, 
+0, 192, 96, 48, 24, 12, 6, 0, 
+0, 124, 12, 12, 12, 12, 12, 124, 
+0, 56, 108, 198, 0, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 255, 
+0, 24, 24, 12, 0, 0, 0, 0, 
+0, 0, 0, 120, 12, 124, 204, 118, 
+0, 0, 224, 96, 124, 102, 102, 252, 
+0, 0, 0, 120, 204, 192, 204, 120, 
+0, 0, 28, 12, 124, 204, 204, 126, 
+0, 0, 0, 120, 204, 252, 192, 120, 
+0, 28, 54, 48, 252, 48, 48, 120, 
+224, 248, 124, 207, 207, 124, 248, 224, 
+0, 255, 231, 129, 189, 255, 255, 0, 
+0, 24, 24, 0, 56, 24, 24, 60, 
+48, 192, 62, 249, 249, 254, 248, 0, 
+0, 224, 102, 108, 120, 108, 102, 230, 
+252, 15, 103, 255, 255, 103, 15, 252, 
+0, 0, 0, 236, 254, 214, 214, 198, 
+224, 216, 254, 195, 153, 153, 231, 252, 
+248, 254, 199, 126, 136, 16, 224, 128, 
+252, 231, 153, 153, 195, 254, 216, 224, 
+0, 0, 118, 204, 204, 124, 12, 30, 
+0, 0, 0, 220, 102, 96, 96, 240, 
+219, 171, 119, 171, 255, 123, 151, 3, 
+0, 48, 48, 252, 48, 48, 54, 28, 
+252, 255, 255, 191, 63, 255, 31, 0, 
+252, 252, 252, 252, 196, 28, 196, 252, 
+128, 64, 96, 189, 159, 208, 240, 0, 
+0, 0, 0, 224, 240, 72, 60, 252, 
+252, 60, 72, 240, 224, 0, 0, 0, 
+0, 31, 255, 63, 191, 127, 255, 252, 
+0, 14, 24, 24, 112, 24, 24, 14, 
+24, 24, 24, 0, 24, 24, 24, 24, 
+0, 112, 24, 24, 14, 24, 24, 112, 
+0, 118, 220, 0, 0, 0, 0, 0, 
+0, 16, 56, 56, 108, 108, 254, 0
+};
+
 
 int
 numer(unsigned char y, unsigned char x)
@@ -463,21 +565,32 @@ ruch2(void)
 void
 move_cursor(unsigned char y, unsigned char x)
 {
-	printf("\033[%u;%uH", y + 1, x + 1);
+	putch(22);
+	putch(y);
+	putch(x);
+	//gotoxy(x, y);
+	//printf("\033[%u;%uH", y + 1, x + 1);
+}
+
+void
+prn(char *t)
+{
+	putch(*t);
+	putch(*(++t));
 }
 
 void
 text(void)
 {
-	move_cursor(0, 4);
-	if (zjedzone <= 0xf) puts_cons("000");
-	else if (zjedzone <= 0xff) puts_cons("00");
-	else if (zjedzone <= 0xfff) puts_cons("0");
+	gotoxy(4, 0);
+	if (zjedzone <= 0xf) printf("000");
+	else if (zjedzone <= 0xff) printf("00");
+	else if (zjedzone <= 0xfff) printf("0");
 	printf("%x", zjedzone);
-	move_cursor(0, 10);
-	if (rekord <= 0xf) puts_cons("000");
-	else if (rekord <= 0xff) puts_cons("00");
-	else if (rekord <= 0xfff) puts_cons("0");
+	gotoxy(10, 0);
+	if (rekord <= 0xf) printf("000");
+	else if (rekord <= 0xff) printf("00");
+	else if (rekord <= 0xfff) printf("0");
 	printf("%x", rekord);
 	zjadl = 0;
 }
@@ -485,26 +598,37 @@ text(void)
 void
 wyswietl(void)
 {
-	int i,j,k;
+	char i,j;
+	int k;
 
 	k = 0;
 	for (i = 0; i < SIZE_Y; i++)
 	{
-		move_cursor(i, 0);
-		for (j = 0; j < SIZE_X; j++, k++) puts_cons(napisy[poleco[k]]);
+		gotoxy(0, i);
+		for (j = 0; j < SIZE_X; j++, k++) prn(napisy[poleco[k]]);
 	}
 	/* Drugi wąż na początku w negatywie */
-	move_cursor(last_y_2, last_x_2 + last_x_2);
-	puts_cons("\033[7m");
-	puts_cons(napisy[poleco[last_y_2 * SIZE_X + last_x_2]]);
-	puts_cons("\033[27m");
+	gotoxy(last_x_2 + last_x_2, last_y_2);
+	putch(27);
+	putch('p');
+//	puts_cons("\033[7m");
+	prn(napisy[poleco[last_y_2 * SIZE_X + last_x_2]]);
+	putch(27);
+	putch('q');
+//	puts_cons("\033[27m");
 	text();
 }
 
-void
-joystick(void)
+unsigned int
+joy_3(void)
 {
-	unsigned int joy = joyfunc(&keyb);
+	return in_JoyKeyboard(&keyb);
+}
+
+void
+joystick11(void)
+{
+	unsigned int joy = joyfunc();
 	unsigned char k;
 
 	if (!joy) return;
@@ -546,9 +670,9 @@ joystick(void)
 }
 
 void
-joystick2(void)
+joystick12(void)
 {
-	unsigned int joy = joyfunc2(&keyb);
+	unsigned int joy = joyfunc2();
 	unsigned char k;
 
 	if (!joy) return;
@@ -598,25 +722,33 @@ narysuj(void)
 		for (licznik = 0; licznik < *powolnosc; licznik++);
 		if (in_KeyPressed(spacja) && in_KeyPressed(caps_shift)) break;
 
-		joystick();
+		joystick11();
 		if (!przerwa)
 		{
 			ruch();
 
-			move_cursor(last_y, last_x + last_x);
+			gotoxy(last_x + last_x, last_y);
 			n = numer(last_y, last_x);
-			puts_cons(napisy[poleco[n]]);
+			prn(napisy[poleco[n]]);
 
-			move_cursor(prev_y, prev_x + prev_x);
+			gotoxy(prev_x + prev_x, prev_y);
 			n = numer(prev_y, prev_x);
-			puts_cons(napisy[poleco[n]]);
+			prn(napisy[poleco[n]]);
 
-			move_cursor(cur_y, cur_x + cur_x);
+			gotoxy(cur_x + cur_x, cur_y);
 			n = numer(cur_y, cur_x);
 
-			if (blad) puts_cons("\033[7m");
-			puts_cons(napisy[poleco[n]]);
-			if (blad) puts_cons("\033[27m");
+			if (blad) {
+				putch(27);
+				putch('p');
+				; ///printf("\033[7m");
+			}
+			prn(napisy[poleco[n]]);
+			if (blad) {
+				//printf("\033[27m");
+				putch(27);
+				putch('q');
+			}
 
 			if (zjadl) text();
 		}
@@ -624,24 +756,32 @@ narysuj(void)
 		for (licznik = 0; licznik < *powolnosc; licznik++);
 		if (in_KeyPressed(spacja) && in_KeyPressed(caps_shift)) break;
 
-		joystick2();
+		joystick12();
 		if (!przerwa2)
 		{
 			ruch2();
 
-			move_cursor(last_y_2, last_x_2 + last_x_2);
+			gotoxy(last_x_2 + last_x_2, last_y_2);
 			n2 = numer(last_y_2, last_x_2);
-			puts_cons(napisy[poleco[n2]]);
+			prn(napisy[poleco[n2]]);
 
-			move_cursor(prev_y_2, prev_x_2 + prev_x_2);
+			gotoxy(prev_x_2 + prev_x_2, prev_y_2);
 			n2 = numer(prev_y_2, prev_x_2);
-			puts_cons(napisy[poleco[n2]]);
+			prn(napisy[poleco[n2]]);
 
-			move_cursor(cur_y_2, cur_x_2 + cur_x_2);
+			gotoxy(cur_x_2 + cur_x_2, cur_y_2);
 			n2 = numer(cur_y_2, cur_x_2);
-			if (blad) puts_cons("\033[7m");
-			puts_cons(napisy[poleco[n2]]);
-			if (blad) puts_cons("\033[27m");
+			if (blad) {
+				putch(27);
+				putch('p');
+				//printf("\033[7m");
+			}
+			prn(napisy[poleco[n2]]);
+			if (blad) {
+				putch(27);
+				putch('q');
+				//printf("\033[27m");
+			}
 
 			if (zjadl2) text();
 		}
@@ -654,8 +794,26 @@ main(int argc, char *argv[])
 #asm
 	di
 #endasm
+
+	int mode;
+
 	mallinit();
 	sbrk(46000, 6000);
+
+	mode = 62;
+
+	void *param = &udgs;
+	console_ioctl(IOCTL_GENCON_SET_UDGS, &param);
+	console_ioctl(IOCTL_GENCON_SET_MODE, &mode);
+	putch(1);
+	putch(32);
+//	putch(4);
+///	putch(1);
+//	int i = 0;
+//	for (i = 0; i < 50; i++) {
+//		printf("AB");
+//	}
+
 	poleco = malloc(ROZMIAR);
 	listax = malloc(ROZMIAR);
 	listay = malloc(ROZMIAR);
@@ -691,7 +849,7 @@ main(int argc, char *argv[])
 		break;
 	default:
 	case 6:
-		joyfunc = in_JoyKeyboard;
+		joyfunc = joy_3;
 		break;
 	}
 
@@ -714,7 +872,7 @@ main(int argc, char *argv[])
 		break;
 	default:
 	case 6:
-		joyfunc2 = in_JoyKeyboard;
+		joyfunc2 = joy_3;
 		break;
 	}
 
@@ -722,12 +880,11 @@ main(int argc, char *argv[])
 
 	snake();
 	wyswietl();
-
 	narysuj();
 
+	mode = 0;
+	console_ioctl(IOCTL_GENCON_SET_MODE, &mode);
 #asm
-	xor a
-	out (255),a
 	ei
 #endasm
 	return 0;
